@@ -18,9 +18,10 @@ syntax match   vroomSlideConfig    "[,0-9A-Za-z_-]\+" contained
 
 syntax match   vroomSlideTitleMark "^==" nextgroup=vroomSlideTitle skipwhite
 syntax match   vroomSlideTitle     "[^\n]\+" contained
-syntax match   vroomSlideNextMark  "^+" nextgroup=@vroomContent
+syntax match   vroomSlideNextMark  "^+"
 
 syntax match   vroomSlideItem      "^\s*\*"
+syntax match   vroomSlideItem      "^+\zs\s*\*"
 syntax match   vroomSlideString    "'[^']\+'"
 syntax match   vroomSlideString    '"[^"]\+"'
 syntax match   vroomSlideEnhance   '\*[^*]\*'
