@@ -30,17 +30,17 @@ syntax region  vroomSlideBlock     start="^\zs----" end="^\ze----" contains=@vro
 
 syntax cluster vroomContent        contains=vroomSlideItem,vroomSlideString,vroomSlideEnhance,vroomSlideTitleMark,vroomSlideNextMark,vroomSlide
 
-syntax region  vroomCodeSlideBlock     start="^\zs---- \(perl\|pl\|pm\|ruby\|rb\|python\|py\|haskell\|hs\|javascript\|js\|actionscript\|as\|shell\|sh\|php\|java\|yaml\|xml\|json\|html\|make\|diff\|conf\|viml\)" end="^\ze----" contains=@vroomCodes
-
-syntax cluster vroomCodes          contains=vroomSlide
-
 syntax match   vroomConfig         "\h\+:" contained
-syntax region  vroomConfigBlock    start="^\zs---- config" end="^\ze----" contains=@vroomConfigs
+syntax region  vroomConfigBlock    start="^\zs---- \+config" end="^\ze----" contains=@vroomConfigs
 
 syntax cluster vroomConfigs        contains=vroomConfig,vroomComment,vroomSlide
 
-syntax region  vroomSlideBigTitleBlock    start="^\zs---- center" end="^\ze----" contains=vroomSlide,vroomSlideBigTitle
+syntax region  vroomSlideBigTitleBlock    start="^\zs---- \+center" end="^\ze----" contains=vroomSlide,vroomSlideBigTitle
 syntax match   vroomSlideBigTitle       "^\w.*" contained
+
+syntax region  vroomCodeSlideBlock     start="^\zs---- \+\(perl\|pl\|pm\|ruby\|rb\|python\|py\|haskell\|hs\|javascript\|js\|actionscript\|as\|shell\|sh\|php\|java\|yaml\|xml\|json\|html\|make\|diff\|conf\|viml\)\>" end="^\ze----" contains=@vroomCodes
+
+syntax cluster vroomCodes          contains=vroomSlide
 
 " Define the default highlighting.
 " For version 5.7 and earlier: only when not done already
