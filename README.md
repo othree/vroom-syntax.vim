@@ -18,7 +18,7 @@ Then add the following line in your vimrc
 License
 -------
 
-Copyright (C) 2013 Kao, Wei-Ko <othree@gmail.com>
+Copyright (C) 2013 Kao, Wei-Ko
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the "Software"),
