@@ -13,20 +13,34 @@ if !exists("main_syntax")
 endif
 
 syntax match   vroomComment        "^#.*"
-syntax match   vroomSlide          "^----" nextgroup=vroomSlideConfig skipwhite
-syntax match   vroomSlideConfig    "[,0-9A-Za-z_-]\+" contained
+syntax match   vroomSlide          "^\zs----" nextgroup=vroomSlideConfig skipwhite
+syntax match   vroomSlideConfig    "[,0-9A-Za-z_]\+" contained
 
-syntax match   vroomSlideTitleMark "^==" nextgroup=vroomSlideTitle skipwhite
+syntax match   vroomSlideTitleMark "^==" nextgroup=vroomSlideTitle skipwhite contained
 syntax match   vroomSlideTitle     "[^\n]\+" contained
-syntax match   vroomSlideNextMark  "^+"
+syntax match   vroomSlideNextMark  "^+" contained
 
-syntax match   vroomSlideItem      "^\s*\*"
-syntax match   vroomSlideItem      "^+\zs\s*\*"
-syntax match   vroomSlideString    "'[^']\+'"
-syntax match   vroomSlideString    '"[^"]\+"'
-syntax match   vroomSlideEnhance   '\*[^*]\*'
+syntax match   vroomSlideItem      "^\s*\*" contained
+syntax match   vroomSlideItem      "^+\zs\s*\*" contained
+syntax match   vroomSlideString    "'[^']\+'" contained
+syntax match   vroomSlideString    '"[^"]\+"' contained
+syntax match   vroomSlideEnhance   '\*[^*]\*' contained
 
-syntax cluster vroomContent        contains=vroomSlideItem,vroomSlideString,vroomSlideEnhance
+syntax region  vroomSlideBlock     start="^\zs----" end="^\ze----" contains=@vroomContent
+
+syntax cluster vroomContent        contains=vroomSlideItem,vroomSlideString,vroomSlideEnhance,vroomSlideTitleMark,vroomSlideNextMark,vroomSlide
+
+syntax region  vroomCodeSlideBlock     start="^\zs---- \(perl\|pl\|pm\|ruby\|rb\|python\|py\|haskell\|hs\|javascript\|js\|actionscript\|as\|shell\|sh\|php\|java\|yaml\|xml\|json\|html\|make\|diff\|conf\|viml\)" end="^\ze----" contains=@vroomCodes
+
+syntax cluster vroomCodes          contains=vroomSlide
+
+syntax match   vroomConfig         "\h\+:" contained
+syntax region  vroomConfigBlock    start="^\zs---- config" end="^\ze----" contains=@vroomConfigs
+
+syntax cluster vroomConfigs        contains=vroomConfig,vroomComment,vroomSlide
+
+syntax region  vroomSlideBigTitleBlock    start="^\zs---- center" end="^\ze----" contains=vroomSlide,vroomSlideBigTitle
+syntax match   vroomSlideBigTitle       "^\w.*" contained
 
 " Define the default highlighting.
 " For version 5.7 and earlier: only when not done already
@@ -39,12 +53,15 @@ if version >= 508 || !exists("did_javascript_syn_inits")
     command -nargs=+ HiLink hi def link <args>
   endif
 
-  HiLink vroomSlide           Constant
+  HiLink vroomConfig          Type
+
+  HiLink vroomSlide           VertSplit
   HiLink vroomSlideConfig     Type
   HiLink vroomComment         Comment
 
   HiLink vroomSlideTitleMark  Operator
   HiLink vroomSlideTitle      Special
+  HiLink vroomSlideBigTitle   Special
   HiLink vroomSlideNextMark   Operator
   HiLink vroomSlideItem       Special
   HiLink vroomSlideString     String
