@@ -13,8 +13,6 @@ if !exists("main_syntax")
 endif
 
 syntax match   vroomComment        "^#.*"
-syntax match   vroomSlide          "^\zs----" nextgroup=vroomSlideConfig skipwhite
-syntax match   vroomSlideConfig    "[,0-9A-Za-z_-]\+" contained
 
 syntax match   vroomSlideTitleMark "^==" nextgroup=vroomSlideTitle skipwhite contained
 syntax match   vroomSlideTitle     "[^\n]\+" contained
@@ -26,21 +24,41 @@ syntax match   vroomSlideString    "'[^']\+'" contained
 syntax match   vroomSlideString    '"[^"]\+"' contained
 syntax match   vroomSlideEnhance   '\*[^*]\*' contained
 
-syntax region  vroomSlideBlock     start="^\zs----" end="^\ze----" contains=@vroomContent
+syntax region  vroomSlideBlock     start="^----" end="^\ze----" contains=@vroomContent,vRoomSlide
 
 syntax cluster vroomContent        contains=vroomSlideItem,vroomSlideString,vroomSlideEnhance,vroomSlideTitleMark,vroomSlideNextMark,vroomSlide
 
 syntax match   vroomConfig         "\h\+:" contained
-syntax region  vroomConfigBlock    start="^\zs---- \+config" end="^\ze----" contains=@vroomConfigs
+syntax region  vroomConfigBlock    start="^---- \+config" end="^\ze----" contains=@vroomConfigs
 
 syntax cluster vroomConfigs        contains=vroomConfig,vroomComment,vroomSlide
 
 syntax region  vroomSlideBigTitleBlock    start="^\zs---- \+center" end="^\ze----" contains=vroomSlide,vroomSlideBigTitle
 syntax match   vroomSlideBigTitle       "^\w.*" contained
 
-syntax region  vroomCodeSlideBlock     start="^\zs---- \+\(perl\|pl\|pm\|ruby\|rb\|python\|py\|haskell\|hs\|javascript\|js\|actionscript\|as\|shell\|sh\|php\|java\|yaml\|xml\|json\|html\|make\|diff\|conf\|viml\)\>" end="^\ze----" contains=@vroomCodes
+let ftypes = [ 'pl', 'pm', 'ruby', 'rb', 'python', 'py', 'haskell', 'hs', 'javascript', 'js', 'actionscript', 'as', 'shell', 'sh', 'php', 'java', 'yaml', 'xml', 'json', 'html', 'make', 'diff', 'conf', 'viml']
+
+" syntax region  vroomCodeSlideBlock     start="^\zs---- \+\(perl\|pl\|pm\|ruby\|rb\|python\|py\|haskell\|hs\|javascript\|js\|actionscript\|as\|shell\|sh\|php\|java\|yaml\|xml\|json\|html\|make\|diff\|conf\|viml\)\>" end="^\ze----" contains=@vroomCodes
+
+for t in ftypes
+  for p in split(&rtp, ',')
+    if search("^---- \\+".t.'\>', 'n')
+      let ext = t
+      if t == 'viml' | let ext = 'vim' | endif
+      if filereadable(p.'/syntax/'.ext.'.vim')
+        echom 'syntax include @Slide'.t.' 'p.'/syntax/'.ext.'.vim'
+        if exists('b:current_syntax') | unlet b:current_syntax | endif
+        exe 'syntax include @Slide'.t.' 'p.'/syntax/'.ext.'.vim'
+      endif
+    endif
+  endfor
+  exe 'syntax region  vroomCode'.t.' start="^---- '.t.'\>\S*$" end="^\ze----" contains=@Slide'.t.',@vroomCodes'
+endfor
 
 syntax cluster vroomCodes          contains=vroomSlide
+
+syntax match   vroomSlide          "^\zs----\ze" nextgroup=vroomSlideConfig skipwhite contained
+syntax match   vroomSlideConfig    "[,0-9A-Za-z_-]\+" contained
 
 " Define the default highlighting.
 " For version 5.7 and earlier: only when not done already
