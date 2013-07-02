@@ -21,7 +21,9 @@ syntax match   vroomSlideTitleMark "^==" nextgroup=vroomSlideTitle skipwhite con
 syntax match   vroomSlideTitle     "[^\n]\+" contained
 
 syntax match   vroomSlideItem      "^\s*\zs\*" contained
+syntax match   vroomSlideItem      "^\s*\zs•" contained
 syntax match   vroomSlideNextItem  "\s*\zs\*" contained
+syntax match   vroomSlideNextItem  "\s*\zs•" contained
 syntax match   vroomSlideNextMark  "^+" contained nextgroup=vroomSlideNextItem
 
 syntax match   vroomSlideString    "'[^']\+'" contained
