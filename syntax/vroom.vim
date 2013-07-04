@@ -118,5 +118,9 @@ endif
 
 let b:current_syntax = 'vroom'
 
+if main_syntax == 'vroom'
+  unlet main_syntax
+endif
+
 let &cpo = s:cpo_save
 unlet s:cpo_save
