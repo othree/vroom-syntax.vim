@@ -22,9 +22,9 @@ syntax match   vroomSlideTitle     "[^\n]\+" contained
 
 syntax match   vroomSlideItem      "^\s*\zs\*" contained
 syntax match   vroomSlideItem      "^\s*\zs•" contained
-syntax match   vroomSlideNextItem  "\s*\zs\*" contained
-syntax match   vroomSlideNextItem  "\s*\zs•" contained
-syntax match   vroomSlideNextMark  "^+" contained nextgroup=vroomSlideNextItem
+syntax match   vroomSlideNextItem  "\*" contained
+syntax match   vroomSlideNextItem  "•" contained
+syntax match   vroomSlideNextMark  "^+" contained nextgroup=vroomSlideNextItem skipwhite
 
 syntax match   vroomSlideString    "'[^']\+'" contained
 syntax match   vroomSlideString    '"[^"]\+"' contained
