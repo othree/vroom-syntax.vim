@@ -54,21 +54,19 @@ for t in ftypes
 endfor
 for t in hasftypes
   let ext = t
-  for p in split(&rtp, ',')
-    if t == 'pl' | let ext = 'perl' | endif
-    if t == 'rb' | let ext = 'ruby' | endif
-    if t == 'py' | let ext = 'python' | endif
-    if t == 'hs' | let ext = 'haskell' | endif
-    if t == 'js' | let ext = 'javascript' | endif
-    if t == 'as' | let ext = 'actionscript' | endif
-    if t == 'viml' | let ext = 'vim' | endif
-    if t == 'shell' | let ext = 'sh' | endif
-    if !exists('s:'.ext.'_get') && filereadable(p.'/syntax/'.ext.'.vim')
-      let s:{ext}_get = 1
-      exe 'syntax include @SlideC'.ext.' '.p.'/syntax/'.ext.'.vim'
-      if exists('b:current_syntax') | unlet b:current_syntax | endif
-    endif
-  endfor
+  if t == 'pl' | let ext = 'perl' | endif
+  if t == 'rb' | let ext = 'ruby' | endif
+  if t == 'py' | let ext = 'python' | endif
+  if t == 'hs' | let ext = 'haskell' | endif
+  if t == 'js' | let ext = 'javascript' | endif
+  if t == 'as' | let ext = 'actionscript' | endif
+  if t == 'viml' | let ext = 'vim' | endif
+  if t == 'shell' | let ext = 'sh' | endif
+  if !exists('s:'.ext.'_get')
+    let s:{ext}_get = 1
+    exe 'syntax include @SlideC'.ext.' syntax/'.ext.'.vim'
+    if exists('b:current_syntax') | unlet b:current_syntax | endif
+  endif
   exe 'syntax region  vroomCode'.t.' start="^---- '.t.'\>\S*$" end="^\ze----" contains=@SlideC'.ext.',@vroomCodes'
 endfor
 
@@ -76,11 +74,9 @@ syntax cluster vroomCodes          contains=vroomSlide
 
 if search("^vimrc:") || search("^gvimrc:")
   if !exists('s:vim_get')
-    for p in split(&rtp, ',')
-      let s:vim_get = 1
-      exe 'syntax include @SlideCvim '.p.'/syntax/vim.vim'
-      if exists('b:current_syntax') | unlet b:current_syntax | endif
-    endfor
+    let s:vim_get = 1
+    exe 'syntax include @SlideCvim syntax/vim.vim'
+    if exists('b:current_syntax') | unlet b:current_syntax | endif
   endif
   syntax region vroomConfigVim start="^g\?vimrc:" end="^\ze\S" contains=@SlideCvim,vroomConfig
 endif
