@@ -46,40 +46,37 @@ let ftypes = [ 'pl', 'pm', 'ruby', 'rb', 'python', 'py', 'haskell', 'hs', 'javas
 
 " syntax region  vroomCodeSlideBlock     start="^\zs---- \+\(perl\|pl\|pm\|ruby\|rb\|python\|py\|haskell\|hs\|javascript\|js\|actionscript\|as\|shell\|sh\|php\|java\|yaml\|xml\|json\|html\|make\|diff\|conf\|viml\)\>" end="^\ze----" contains=@vroomCodes
 
-let hasftypes = []
-for t in ftypes
-  if search("^---- \\+".t.'\>', 'n')
-    call add(hasftypes, t)
+for ext in ftypes
+  let has = 0
+  if search("^---- \\+".ext.'\>', 'n')
+    let has = 1
   endif
-endfor
-for t in hasftypes
-  let ext = t
-  if t == 'pl' | let ext = 'perl' | endif
-  if t == 'rb' | let ext = 'ruby' | endif
-  if t == 'py' | let ext = 'python' | endif
-  if t == 'hs' | let ext = 'haskell' | endif
-  if t == 'js' | let ext = 'javascript' | endif
-  if t == 'as' | let ext = 'actionscript' | endif
-  if t == 'viml' | let ext = 'vim' | endif
-  if t == 'shell' | let ext = 'sh' | endif
-  if !exists('s:'.ext.'_get')
-    let s:{ext}_get = 1
-    exe 'syntax include @SlideC'.ext.' syntax/'.ext.'.vim'
-    if exists('b:current_syntax') | unlet b:current_syntax | endif
+  if ext == 'viml' && search("^g\?vimrc:")
+    let has = 1
   endif
-  exe 'syntax region  vroomCode'.t.' start="^---- '.t.'\>\S*$" end="^\ze----" contains=@SlideC'.ext.',@vroomCodes'
+  if has == 1
+    let ft = ext
+    if ext == 'pl'    | let ft = 'perl'         | endif
+    if ext == 'rb'    | let ft = 'ruby'         | endif
+    if ext == 'py'    | let ft = 'python'       | endif
+    if ext == 'hs'    | let ft = 'haskell'      | endif
+    if ext == 'js'    | let ft = 'javascript'   | endif
+    if ext == 'as'    | let ft = 'actionscript' | endif
+    if ext == 'viml'  | let ft = 'vim'          | endif
+    if ext == 'shell' | let ft = 'sh'           | endif
+    if !exists('s:'.ft.'_got')
+      let s:{ft}_got = 1
+      exe 'syntax include @SlideC'.ft.' syntax/'.ft.'.vim'
+      if exists('b:current_syntax') | unlet b:current_syntax | endif
+    endif
+    exe 'syntax region  vroomCode'.ext.' start="^---- '.ext.'\>\S*$" end="^\ze----" contains=@SlideC'.ft.',@vroomCodes'
+    if ext == 'viml'
+      syntax region vroomConfigVim start="^g\?vimrc:" end="^\ze\S" contains=@SlideCvim,vroomConfig
+    endif
+  endif
 endfor
 
 syntax cluster vroomCodes          contains=vroomSlide
-
-if search("^vimrc:") || search("^gvimrc:")
-  if !exists('s:vim_get')
-    let s:vim_get = 1
-    exe 'syntax include @SlideCvim syntax/vim.vim'
-    if exists('b:current_syntax') | unlet b:current_syntax | endif
-  endif
-  syntax region vroomConfigVim start="^g\?vimrc:" end="^\ze\S" contains=@SlideCvim,vroomConfig
-endif
 
 syntax match   vroomSlide          "^\zs----\ze" nextgroup=vroomSlideConfig skipwhite contained
 syntax match   vroomSlideConfig    "[,0-9A-Za-z_-]\+" contained
