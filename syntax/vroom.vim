@@ -18,7 +18,7 @@ set cpo&vim
 syntax match   vroomComment        "^#.*"
 
 syntax match   vroomSlideTitleMark "^==" nextgroup=vroomSlideTitle skipwhite contained
-syntax match   vroomSlideTitle     "[^\n]\+" contained
+syntax match   vroomSlideTitle     ".\+" contained
 
 syntax match   vroomSlideItem      "^\s*\zs\*" contained
 syntax match   vroomSlideItem      "^\s*\zs•" contained
